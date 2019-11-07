@@ -2,7 +2,9 @@ import csv
 from django.shortcuts import render
 from table.models import Field, FilePath
 
-CSV_FILENAME = 'phones.csv'
+
+FilePath.set_path('phones.csv')
+CSV_FILENAME = FilePath.get_path()
 COLUMNS = [
     {'name': 'id', 'width': 1},
     {'name': 'name', 'width': 3},
@@ -14,7 +16,6 @@ COLUMNS = [
 
 def table_view(request):
     template = 'table.html'
-    FilePath.set_path(CSV_FILENAME)
     with open(CSV_FILENAME, 'rt') as csv_file:
         header = []
         table = []

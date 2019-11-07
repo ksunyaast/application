@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from os import path
+import os
 
 
 class Field(models.Model):
@@ -14,19 +14,14 @@ class FilePath(models.Model):
 
     @staticmethod
     def get_path():
-        file_path = FilePath.objects.all()
-        if len(file_path) > 0:
-            return file_path[0].path
+        file_path = FilePath.objects.first()
+        if file_path:
+            return file_path.path
         else:
-            return 'Таблица пуста'
+            return None
 
     @staticmethod
     def set_path(csv_file):
-        csv_filepath = settings.BASE_DIR + '\\' + csv_file
-        file_path = FilePath.objects.all()
-        if len(file_path) > 0:
-            if file_path[0].path != csv_filepath:
-                file_path[0].path = csv_filepath
-                file_path[0].save()
-        else:
-            FilePath.objects.create(path=csv_filepath)
+        csv_filepath = os.path.join(settings.BASE_DIR, csv_file)
+        values_for_update = {'path': csv_filepath}
+        FilePath.objects.update_or_create(id=1, defaults=values_for_update)
